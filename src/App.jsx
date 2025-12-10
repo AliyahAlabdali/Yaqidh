@@ -40,7 +40,7 @@ const RequireRole = ({ allowed = [], children }) => {
 
   if (role && allowed.includes(role)) return children;
 
-  // If user is not allowed → redirect to login with message
+  // Redirect to login with error if not allowed
   return <Navigate to="/login?error=invalid" replace />;
 };
 
