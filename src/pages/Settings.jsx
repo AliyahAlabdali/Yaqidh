@@ -294,9 +294,10 @@ const ManageCameras = () => {
           <div key={camera.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
             <div className="flex items-start justify-between mb-3">
               <h4 className="font-semibold text-slate-800">{camera.name}</h4>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${camera.status === 'Online' ? 'bg-safe bg-opacity-10 text-safe' : 'bg-danger bg-opacity-10 text-danger'}`}>
-                {camera.status}
-              </span>
+              <div className="flex flex-col items-center">
+                <span className="text-xs font-medium text-slate-600 mb-1">{camera.status}</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${camera.status === 'Online' ? 'bg-safe bg-opacity-10 text-safe' : 'bg-danger bg-opacity-10 text-danger'}`}></span>
+              </div>
             </div>
             <p className="text-sm text-slate-600 mb-1">IP: {camera.ip}</p>
             <p className="text-sm text-slate-600 mb-3">Zone: {camera.zone}</p>
@@ -309,9 +310,9 @@ const ManageCameras = () => {
               </button>
               <button
                 onClick={() => handleDelete(camera.id)}
-                className="flex-1 px-2 py-2 bg-danger bg-opacity-10 hover:bg-danger hover:bg-opacity-20 text-danger rounded-lg font-medium text-sm transition flex items-center justify-center gap-1"
+                className="flex-1 px-4 py-2 bg-danger text-white rounded-lg font-medium text-sm transition hover:bg-danger-dark"
               >
-                <Trash2 size={16} /> Delete
+                Remove
               </button>
             </div>
           </div>
