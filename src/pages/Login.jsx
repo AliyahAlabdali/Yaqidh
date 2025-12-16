@@ -1,0 +1,145 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('manager');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      if (email && password) {
+        // Store user session with role
+        sessionStorage.setItem('user', JSON.stringify({ email, role }));
+        window.location.href = '/';
+      } else {
+        setError('Please fill in all fields');
+      }
+      setLoading(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <img src="/Yaqidh-logo.png" alt="Yaqidh Logo" className="h-20 w-auto object-contain mx-auto mb-4" />
+          <p className="text-slate-600 mt-2">Security & Monitoring System</p>
+        </div>
+
+        {/* Login Card */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-100">
+          <h2 className="text-2xl font-bold text-slate-800 mb-6">Welcome Back</h2>
+
+          {error && (
+            <div className="mb-4 p-4 bg-danger border border-danger rounded-xl text-white text-sm font-semibold">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-5">
+                        {/* Role Selector */}
+                        <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">
+                            Select Role (for testing)
+                          </label>
+                          <select
+                            value={role}
+                            onChange={e => setRole(e.target.value)}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          >
+                            <option value="manager">Nursery Manager (Admin)</option>
+                            <option value="parent">Parent/Caregiver</option>
+                            <option value="teacher">Teacher</option>
+                          </select>
+                        </div>
+            {/* Email/Phone Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Email or Phone
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3.5 text-slate-400" size={20} />
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com or +1234567890"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3.5 text-slate-400" size={20} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full pl-10 pr-10 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-right">
+              <Link to="/forgot-password" className="text-sm text-brand-500 hover:text-brand-600 font-medium">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-xl transition duration-200 disabled:opacity-50"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          {/* Register Link */}
+          <div className="mt-6 text-center">
+            <p className="text-slate-600">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-brand-500 hover:text-brand-600 font-semibold">
+                Register here
+              </Link>
+            </p>
+          </div>
+
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 bg-brand-50 rounded-xl border border-brand-200">
+            <p className="text-xs font-medium text-brand-900 mb-2">Demo Credentials:</p>
+            <p className="text-xs text-brand-700">Email: demo@yaqidh.com</p>
+            <p className="text-xs text-brand-700">Password: demo123</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
