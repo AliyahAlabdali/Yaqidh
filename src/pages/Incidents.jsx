@@ -8,11 +8,16 @@ const IncidentCard = ({ incident, onViewDetails }) => (
   >
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-start gap-3">
-        <div className={`p-3 rounded-xl ${incident.severity === 'critical' ? 'bg-danger bg-opacity-10' : incident.severity === 'warning' ? 'bg-brand-100' : 'bg-safe bg-opacity-10'}`}>
+        {/* Icon Box with clearer colors */}
+        <div className={`p-3 rounded-xl ${
+          incident.severity === 'critical' ? 'bg-red-100 text-red-600' : 
+          incident.severity === 'warning' ? 'bg-orange-100 text-orange-600' : 
+          'bg-blue-100 text-blue-600'
+        }`}>
           {incident.severity === 'critical' ? (
-            <AlertTriangle size={20} className="text-danger" />
+            <AlertTriangle size={20} />
           ) : (
-            <AlertCircle size={20} className={incident.severity === 'warning' ? 'text-brand-500' : 'text-safe'} />
+            <AlertCircle size={20} />
           )}
         </div>
         <div>
@@ -22,16 +27,24 @@ const IncidentCard = ({ incident, onViewDetails }) => (
           </p>
         </div>
       </div>
-      <span className={`px-3 py-1 rounded-full text-sm font-medium ${incident.severity === 'critical' ? 'bg-danger bg-opacity-10 text-danger' : incident.severity === 'warning' ? 'bg-brand-100 text-brand-600' : 'bg-safe bg-opacity-10 text-safe'}`}>
+      
+      {/* Severity Badge - Fixed visibility issues */}
+      <span className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${
+        incident.severity === 'critical' ? 'bg-red-100 text-red-600' : 
+        incident.severity === 'warning' ? 'bg-orange-100 text-orange-600' : 
+        'bg-blue-100 text-blue-600'
+      }`}>
         {incident.severity.charAt(0).toUpperCase() + incident.severity.slice(1)}
       </span>
     </div>
+    
     <div className="flex items-center gap-2 text-sm text-slate-600">
       <Clock size={14} />
       <span>{incident.time}</span>
     </div>
+    
     <div className="mt-4 flex items-center gap-2">
-      <div className={`w-3 h-3 rounded-full ${incident.status === 'resolved' ? 'bg-safe' : 'bg-brand-500'}`}></div>
+      <div className={`w-3 h-3 rounded-full ${incident.status === 'resolved' ? 'bg-green-500' : 'bg-red-500'}`}></div>
       <span className="text-sm font-medium text-slate-600">
         {incident.status === 'resolved' ? 'Resolved' : 'Active'}
       </span>
@@ -50,11 +63,20 @@ const INCIDENT_TYPES = [
 const IncidentModal = ({ incident, onClose }) => {
   const [notes, setNotes] = useState('');
 
+  // Helper for modal severity badges
+  const getBadgeStyle = (severity) => {
+    switch(severity) {
+      case 'critical': return 'bg-red-100 text-red-600';
+      case 'warning': return 'bg-orange-100 text-orange-600';
+      default: return 'bg-blue-100 text-blue-600';
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-100 p-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-slate-100 p-6 flex items-center justify-between z-10">
           <h2 className="text-2xl font-bold text-slate-800">Incident Details</h2>
           <button
             onClick={onClose}
@@ -74,11 +96,7 @@ const IncidentModal = ({ incident, onClose }) => {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-slate-600 uppercase mb-2">Severity</h3>
-              <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
-                incident.severity === 'critical' ? 'bg-danger bg-opacity-10 text-danger' : 
-                incident.severity === 'warning' ? 'bg-brand-100 text-brand-600' : 
-                'bg-safe bg-opacity-10 text-safe'
-              }`}>
+              <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getBadgeStyle(incident.severity)}`}>
                 {incident.severity.charAt(0).toUpperCase() + incident.severity.slice(1)}
               </span>
             </div>
@@ -89,7 +107,7 @@ const IncidentModal = ({ incident, onClose }) => {
             <div>
               <h3 className="text-sm font-semibold text-slate-600 uppercase mb-2">Status</h3>
               <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${
-                incident.status === 'resolved' ? 'bg-safe bg-opacity-10 text-safe' : 'bg-brand-100 text-brand-600'
+                incident.status === 'resolved' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
               }`}>
                 {incident.status.charAt(0).toUpperCase() + incident.status.slice(1)}
               </span>
@@ -102,7 +120,7 @@ const IncidentModal = ({ incident, onClose }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-slate-600">Timestamp</p>
-                <p className="font-medium text-slate-800">2025-12-09 10:45:23</p>
+                <p className="font-medium text-slate-800">{incident.time}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-600">Camera ID</p>
@@ -130,46 +148,27 @@ const IncidentModal = ({ incident, onClose }) => {
             </div>
           </div>
 
-          {/* Alert Logs */}
-          <div>
-            <h3 className="font-semibold text-slate-800 mb-3">Alert Logs</h3>
-            <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-              <div className="flex items-center justify-between text-sm">
-                <p className="text-slate-600">10:45:23 - Motion detected</p>
-                <span className="text-xs text-slate-500">System</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <p className="text-slate-600">10:45:45 - Alert triggered</p>
-                <span className="text-xs text-slate-500">System</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <p className="text-slate-600">10:46:12 - Administrator notified</p>
-                <span className="text-xs text-slate-500">System</span>
-              </div>
-            </div>
-          </div>
-
           {/* User Notes */}
           <div>
             <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <MessageSquare size={20} className="text-brand-500" />
+              <MessageSquare size={20} className="text-blue-500" />
               User Notes
             </h3>
             <div className="space-y-3">
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <p className="font-medium text-slate-800">Admin Note</p>
-                <p className="text-sm text-slate-600 mt-1">False alarm - customer walking past the property line.</p>
-                <p className="text-xs text-slate-500 mt-2">John Doe • 2 hours ago</p>
+                <p className="text-sm text-slate-600 mt-1">{incident.notes || 'No initial notes.'}</p>
+                <p className="text-xs text-slate-500 mt-2">System • {incident.time}</p>
               </div>
 
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Add your notes here..."
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 rows="3"
               />
-              <button className="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 rounded-xl transition">
+              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-xl transition">
                 Add Note
               </button>
             </div>
@@ -177,8 +176,8 @@ const IncidentModal = ({ incident, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-100 p-6 flex gap-3">
-          <button className="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-xl transition">
+        <div className="border-t border-slate-100 p-6 flex gap-3 bg-white rounded-b-2xl">
+          <button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition">
             Mark as Resolved
           </button>
           <button
@@ -226,7 +225,7 @@ export default function Incidents() {
 
   const [selectedIncident, setSelectedIncident] = useState(null);
 
-  // Read current user for greeting and role-based UI
+  // Read current user
   let currentUser = null;
   try { currentUser = JSON.parse(sessionStorage.getItem('user')); } catch (e) { currentUser = null; }
   const currentRole = currentUser?.role || null;
@@ -241,14 +240,14 @@ export default function Incidents() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-              <AlertTriangle size={32} className="text-danger" />
+              <AlertTriangle size={32} className="text-red-500" />
               Incidents Log
             </h2>
             <p className="text-slate-500 mt-2">Track and manage all security incidents</p>
           </div>
           {/* Teacher welcome banner */}
           {currentRole === 'teacher' && (
-            <div className="ml-4 px-4 py-2 rounded-xl bg-brand-50 border border-brand-100 text-brand-700">
+            <div className="ml-4 px-4 py-2 rounded-xl bg-blue-50 border border-blue-100 text-blue-700">
               <div className="text-sm font-medium">Welcome</div>
               <div className="text-sm font-semibold">{currentName ? `${currentName}` : 'Teacher'}</div>
             </div>
@@ -261,13 +260,13 @@ export default function Incidents() {
           <p className="text-slate-500 text-sm mb-2">Total Incidents</p>
           <h3 className="text-3xl font-bold text-slate-800">{incidents.length}</h3>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-danger border-opacity-20 bg-danger bg-opacity-5">
-          <p className="text-danger text-sm mb-2 font-medium">Critical Alerts</p>
-          <h3 className="text-3xl font-bold text-danger">{activeSevere}</h3>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-red-100 bg-red-50">
+          <p className="text-red-600 text-sm mb-2 font-medium">Critical Alerts</p>
+          <h3 className="text-3xl font-bold text-red-600">{activeSevere}</h3>
         </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-brand-200 bg-brand-50">
-          <p className="text-brand-600 text-sm mb-2 font-medium">Warnings</p>
-          <h3 className="text-3xl font-bold text-brand-600">{activeWarnings}</h3>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-orange-100 bg-orange-50">
+          <p className="text-orange-600 text-sm mb-2 font-medium">Warnings</p>
+          <h3 className="text-3xl font-bold text-orange-600">{activeWarnings}</h3>
         </div>
       </div>
 
