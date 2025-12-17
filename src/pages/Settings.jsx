@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Bell, Camera, Users, BarChart3, Upload, Plus, Edit2, Trash2 } from 'lucide-react';
 
 const TabButton = ({ tab, activeTab, onClick, label }) => (
@@ -196,16 +196,36 @@ const NotificationsTab = () => {
   );
 };
 
-// Tab 3: Manage Cameras
-const ManageCameras = () => {
-  const [cameras, setCameras] = useState([
-    { id: 1, name: 'Front Gate', ip: '192.168.1.10', zone: 'Entrance', status: 'Online' },
-    { id: 2, name: 'Parking Lot', ip: '192.168.1.11', zone: 'Parking', status: 'Online' },
-    { id: 3, name: 'Storage Room', ip: '192.168.1.12', zone: 'Storage', status: 'Offline' },
-  ]);
+// Tab 3: Manage Cameras (Conditional Data)
+const ManageCameras = ({ role }) => {
+  // Define camera sets
+  const managerCameras = [
+    { id: 1, name: 'Main Play Area Cam', ip: '192.168.1.10', zone: 'Play Area', status: 'Online' },
+    { id: 2, name: 'Infant Nap Room', ip: '192.168.1.11', zone: 'Nap Room', status: 'Online' },
+    { id: 3, name: 'Dining Hall', ip: '192.168.1.12', zone: 'Cafeteria', status: 'Offline' },
+    { id: 4, name: 'Classroom 1 Cam', ip: '192.168.1.13', zone: 'Classroom 1', status: 'Online' },
+    { id: 5, name: 'Classroom 2 Cam', ip: '192.168.1.14', zone: 'Classroom 2', status: 'Online' },
+  ];
+
+  const parentCameras = [
+    { id: 1, name: 'Living Room', ip: '192.168.0.5', zone: 'Living Area', status: 'Online' },
+    { id: 2, name: 'Baby\'s Bedroom', ip: '192.168.0.6', zone: 'Bedroom', status: 'Online' },
+    { id: 3, name: 'Garden / Backyard', ip: '192.168.0.7', zone: 'Garden', status: 'Offline' },
+  ];
+
+  const [cameras, setCameras] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: '', ip: '', zone: '', status: 'Online' });
+
+  // Initialize cameras based on role
+  useEffect(() => {
+    if (role === 'manager') {
+      setCameras(managerCameras);
+    } else {
+      setCameras(parentCameras);
+    }
+  }, [role]);
 
   const handleAddCamera = () => {
     if (formData.name && formData.ip && formData.zone) {
@@ -232,7 +252,10 @@ const ManageCameras = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-slate-800">
+          {role === 'manager' ? 'Nursery Camera System' : 'Home Monitoring System'}
+        </h3>
         <button
           onClick={() => setShowForm(!showForm)}
           className="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium transition flex items-center gap-2"
@@ -258,7 +281,7 @@ const ManageCameras = () => {
               className="px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
             <input
-              placeholder="Zone/Area"
+              placeholder="Zone (e.g., Bedroom, Play Area)"
               value={formData.zone}
               onChange={(e) => setFormData({...formData, zone: e.target.value})}
               className="px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -328,8 +351,8 @@ const ManageCameras = () => {
 // Tab 4: User Management (Manager Only)
 const UserManagement = () => {
   const [users, setUsers] = useState([
-    { id: 1, email: 'teacher1@nursery.com', zone: 'Classroom A', role: 'Teacher' },
-    { id: 2, email: 'teacher2@nursery.com', zone: 'Classroom B', role: 'Teacher' },
+    { id: 1, email: 'teacher1@nursery.com', zone: 'Nap Room', role: 'Teacher' },
+    { id: 2, email: 'teacher2@nursery.com', zone: 'Play Area', role: 'Teacher' },
   ]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ email: '', zone: '', role: 'Teacher' });
@@ -368,7 +391,7 @@ const UserManagement = () => {
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
             <input
-              placeholder="Assigned Classroom/Zone"
+              placeholder="Assigned Zone (e.g., Nap Room)"
               value={formData.zone}
               onChange={(e) => setFormData({...formData, zone: e.target.value})}
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -440,9 +463,9 @@ const UserManagement = () => {
 // Tab 5: Performance & Routing
 const PerformanceTab = () => {
   const zoneData = [
-    { zone: 'Entrance', alerts: 12, avgResponse: '2.1m' },
-    { zone: 'Parking', alerts: 8, avgResponse: '2.5m' },
-    { zone: 'Storage', alerts: 3, avgResponse: '1.8m' },
+    { zone: 'Play Area', alerts: 12, avgResponse: '1.2m' },
+    { zone: 'Nap Room', alerts: 8, avgResponse: '0.8m' },
+    { zone: 'Cafeteria', alerts: 3, avgResponse: '1.5m' },
     { zone: 'Classrooms', alerts: 5, avgResponse: '2.3m' },
   ];
 
@@ -479,7 +502,7 @@ const PerformanceTab = () => {
               </div>
             ))}
           </div>
-          <p className="text-sm text-slate-600 mt-4">Overall Average: <span className="font-semibold text-slate-800">2.2 minutes</span></p>
+          <p className="text-sm text-slate-600 mt-4">Overall Average: <span className="font-semibold text-slate-800">1.45 minutes</span></p>
         </div>
       </div>
     </div>
@@ -541,7 +564,7 @@ export default function Settings() {
       <div>
         {activeTab === 'profile' && <EditProfile />}
         {activeTab === 'notifications' && <NotificationsTab />}
-        {activeTab === 'cameras' && showCameras && <ManageCameras />}
+        {activeTab === 'cameras' && showCameras && <ManageCameras role={role} />}
         {activeTab === 'users' && showUsers && <UserManagement />}
         {activeTab === 'performance' && showPerformance && <PerformanceTab />}
       </div>
