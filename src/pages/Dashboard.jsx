@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // 1. Added useState
 import { 
   ShieldCheck, 
   AlertOctagon, 
@@ -6,7 +6,8 @@ import {
   AlertTriangle, 
   CheckCircle, 
   Info, 
-  Clock 
+  Clock,
+  Filter // 2. Added Filter icon
 } from 'lucide-react';
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
@@ -22,7 +23,10 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 );
 
 export default function Dashboard() {
-  // Mock Data: Updated to include a second Fall Detected case
+  // 3. State for the active filter
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  // Mock Data
   const recentActivity = [
     {
       id: 1,
@@ -54,6 +58,11 @@ export default function Dashboard() {
     }
   ];
 
+  // 4. Filter Logic: Create a derived list based on state
+  const filteredActivity = activeFilter === 'all' 
+    ? recentActivity 
+    : recentActivity.filter(item => item.type === activeFilter);
+
   // Helper to style the icons based on severity
   const getAlertStyle = (type) => {
     switch(type) {
@@ -84,47 +93,82 @@ export default function Dashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard title="Active Cameras" value="12/12" icon={ShieldCheck} color="bg-safe" />
-        {/* Updated value to reflect 4 items in the list */}
         <StatCard title="Today's Incidents" value="4" icon={AlertOctagon} color="bg-danger" />
         <StatCard title="System Load" value="14%" icon={Activity} color="bg-brand-500" />
       </div>
 
       {/* Recent Activity Section */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <div className="flex justify-between items-center mb-6">
+        
+        {/* Header with Filters */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <h3 className="font-bold text-slate-800">Recent System Activity</h3>
-          <button className="text-sm text-brand-500 font-medium hover:text-brand-600">
-            View All History
-          </button>
+          
+          {/* 5. Filter Pills Component */}
+          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
+            {[
+              { id: 'all', label: 'All', color: 'bg-white text-slate-700 shadow-sm' },
+              { id: 'critical', label: 'Critical', color: 'bg-red-100 text-red-700' },
+              { id: 'warning', label: 'Warnings', color: 'bg-orange-100 text-orange-700' }
+            ].map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => setActiveFilter(filter.id)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out ${
+                  activeFilter === filter.id 
+                    ? `${filter.color} shadow-sm scale-105` 
+                    : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-4">
-          {recentActivity.map((activity) => (
-            <div 
-              key={activity.id} 
-              className="flex items-start p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-md transition-all duration-200"
-            >
-              {/* Icon Box */}
-              <div className={`p-3 rounded-lg border ${getAlertStyle(activity.type)} mr-4`}>
-                {activity.type === 'critical' && <AlertOctagon size={20} />}
-                {activity.type === 'warning' && <AlertTriangle size={20} />}
-                {activity.type === 'success' && <CheckCircle size={20} />}
-                {activity.type === 'info' && <Info size={20} />}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1">
-                <div className="flex justify-between items-start">
-                  <h4 className="font-semibold text-slate-800 text-sm">{activity.message}</h4>
-                  <div className="flex items-center text-slate-400 text-xs">
-                    <Clock size={12} className="mr-1" />
-                    {activity.time}
-                  </div>
+          {/* 6. Render Filtered List with Empty State */}
+          {filteredActivity.length > 0 ? (
+            filteredActivity.map((activity) => (
+              <div 
+                key={activity.id} 
+                className="flex items-start p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-md transition-all duration-200 group"
+              >
+                {/* Icon Box */}
+                <div className={`p-3 rounded-lg border ${getAlertStyle(activity.type)} mr-4 group-hover:scale-110 transition-transform`}>
+                  {activity.type === 'critical' && <AlertOctagon size={20} />}
+                  {activity.type === 'warning' && <AlertTriangle size={20} />}
+                  {activity.type === 'success' && <CheckCircle size={20} />}
+                  {activity.type === 'info' && <Info size={20} />}
                 </div>
-                <p className="text-slate-500 text-sm mt-1">{activity.details}</p>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-semibold text-slate-800 text-sm">{activity.message}</h4>
+                    <div className="flex items-center text-slate-400 text-xs">
+                      <Clock size={12} className="mr-1" />
+                      {activity.time}
+                    </div>
+                  </div>
+                  <p className="text-slate-500 text-sm mt-1">{activity.details}</p>
+                </div>
               </div>
+            ))
+          ) : (
+            // Empty State
+            <div className="text-center py-10 text-slate-400">
+              <Filter size={48} className="mx-auto mb-3 opacity-20" />
+              <p>No activities found for this filter.</p>
             </div>
-          ))}
+          )}
+        </div>
+        
+        {/* Footer Link */}
+        <div className="mt-6 text-center pt-4 border-t border-slate-50">
+           <button className="text-sm text-brand-500 font-medium hover:text-brand-600 hover:underline">
+            View Full Incident History
+          </button>
         </div>
       </div>
     </div>
