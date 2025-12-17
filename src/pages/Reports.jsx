@@ -42,6 +42,56 @@ const ReportCard = ({ title, description, date, type }) => (
 );
 
 export default function Reports() {
+  const [filters, setFilters] = useState({
+    dateRange: { start: '', end: '' },
+    alertType: '',
+    incidentType: '',
+  });
+  const [filteredReports, setFilteredReports] = useState([]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateFilters = () => {
+    const { dateRange, alertType, incidentType } = filters;
+    if (!dateRange.start || !dateRange.end) {
+      alert('Please select a valid date range.');
+      return false;
+    }
+    if (!alertType) {
+      alert('Please select an alert type.');
+      return false;
+    }
+    if (!incidentType) {
+      alert('Please select an incident type.');
+      return false;
+    }
+    return true;
+  };
+
+  const applyFilters = () => {
+    if (!validateFilters()) return;
+
+    // Mock data retrieval based on filters
+    const reports = [
+      { id: 1, date: '2025-12-10', type: 'Critical', incidentType: 'Fall Detected', description: 'Fall detected' },
+      { id: 2, date: '2025-12-11', type: 'Warning', incidentType: 'Aggressive Behavior', description: 'Aggressive behavior' },
+    ];
+
+    const filtered = reports.filter((report) => {
+      const isDateInRange =
+        new Date(report.date) >= new Date(filters.dateRange.start) &&
+        new Date(report.date) <= new Date(filters.dateRange.end);
+      const isTypeMatch = report.type === filters.alertType;
+      const isIncidentTypeMatch = report.incidentType === filters.incidentType;
+      return isDateInRange && isTypeMatch && isIncidentTypeMatch;
+    });
+
+    setFilteredReports(filtered);
+  };
+
   return (
     <div className="space-y-6">
       <header className="mb-6">
@@ -106,6 +156,75 @@ export default function Reports() {
         </div>
       </div>
 
+      {/* Filters */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">Filters</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Start Date</label>
+            <input
+              type="date"
+              name="start"
+              value={filters.dateRange.start}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  dateRange: { ...prev.dateRange, start: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">End Date</label>
+            <input
+              type="date"
+              name="end"
+              value={filters.dateRange.end}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  dateRange: { ...prev.dateRange, end: e.target.value },
+                }))
+              }
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Alert Type</label>
+            <select
+              name="alertType"
+              value={filters.alertType}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">Select Alert Type</option>
+              <option value="Critical">Critical</option>
+              <option value="Warning">Warning</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Incident Type</label>
+            <select
+              name="incidentType"
+              value={filters.incidentType}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">Select Incident Type</option>
+              <option value="Fall Detected">Fall Detected</option>
+              <option value="Aggressive Behavior">Aggressive Behavior</option>
+            </select>
+          </div>
+        </div>
+        <button
+          onClick={applyFilters}
+          className="mt-6 w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-xl transition"
+        >
+          Apply Filters
+        </button>
+      </div>
+
       {/* Available Reports */}
       <div>
         <h3 className="font-semibold text-slate-800 mb-4">Available Reports</h3>
@@ -115,6 +234,17 @@ export default function Reports() {
           <ReportCard title="Camera Performance Report" description="Status and activity report for all cameras" date="Dec 8, 2025" type="Weekly" />
           <ReportCard title="Alert History Report" description="Complete log of all alerts and notifications" date="Dec 7, 2025" type="Custom" />
         </div>
+      </div>
+
+      <div className="space-y-4">
+        {filteredReports.map((report) => (
+          <div key={report.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+            <h4 className="font-semibold text-slate-800">{report.description}</h4>
+            <p className="text-sm text-slate-600">Date: {report.date}</p>
+            <p className="text-sm text-slate-600">Type: {report.type}</p>
+            <p className="text-sm text-slate-600">Incident Type: {report.incidentType}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
