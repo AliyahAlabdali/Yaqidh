@@ -18,7 +18,7 @@ const TabButton = ({ tab, activeTab, onClick, label }) => (
 const EditProfile = () => {
   const [profileData, setProfileData] = useState({
     name: 'Sara Ahmed',
-    email: 'john@example.com',
+    email: 'sara.ahmed@example.com',
     phone: '+966 00 000 0000',
   });
   const [picture, setPicture] = useState(null);
@@ -296,7 +296,7 @@ const ManageCameras = () => {
               <h4 className="font-semibold text-slate-800">{camera.name}</h4>
               <div className="flex flex-col items-center">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${camera.status === 'Online' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium ${camera.status === 'Online' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                 >
                   {camera.status === 'Online' ? 'Active' : 'Offline'}
                 </span>
