@@ -17,9 +17,9 @@ const TabButton = ({ tab, activeTab, onClick, label }) => (
 // Tab 1: Edit Profile
 const EditProfile = () => {
   const [profileData, setProfileData] = useState({
-    name: 'John Doe',
+    name: 'Sara Ahmed',
     email: 'john@example.com',
-    phone: '+1 (555) 000-0000',
+    phone: '+966 00 000 0000',
   });
   const [picture, setPicture] = useState(null);
 
