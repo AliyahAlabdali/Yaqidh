@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Activity, AlertCircle, CheckCircle } from 'lucide-react';
 
 const CameraStatus = ({ name, status, activity }) => (
@@ -9,13 +9,16 @@ const CameraStatus = ({ name, status, activity }) => (
         <p className="text-sm text-slate-500 mt-1">{activity}</p>
       </div>
       {status === 'active' ? (
-        <CheckCircle size={24} className="text-safe" />
+        // Fixed: Replaced 'text-safe' with standard Tailwind color
+        <CheckCircle size={24} className="text-emerald-500" />
       ) : (
-        <AlertCircle size={24} className="text-danger" />
+        // Fixed: Replaced 'text-danger' with standard Tailwind color
+        <AlertCircle size={24} className="text-red-500" />
       )}
     </div>
     <div className="flex items-center gap-2">
-      <div className={`w-3 h-3 rounded-full ${status === 'active' ? 'bg-safe' : 'bg-danger'}`}></div>
+      {/* Fixed: Status dots using standard colors */}
+      <div className={`w-3 h-3 rounded-full ${status === 'active' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
       <span className="text-sm font-medium text-slate-600">
         {status === 'active' ? 'Active' : 'Inactive'}
       </span>
@@ -42,23 +45,31 @@ export default function LiveMonitoring() {
   return (
     <div className="space-y-6">
       <header className="mb-6">
+        {/* Fixed: Replaced 'text-brand-500' with a standard color if brand is undefined */}
         <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-          <Activity size={32} className="text-brand-500" />
+          <Activity size={32} className="text-blue-600" />
           Live Monitoring
         </h2>
         <p className="text-slate-500 mt-2">Real-time camera status and activity feed</p>
       </header>
 
+      {/* Summary Bar */}
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between">
           <h3 className="font-semibold text-slate-800">Active Cameras: 11/12</h3>
           <div className="flex gap-2">
-            <span className="px-3 py-1 bg-safe bg-opacity-10 text-safe rounded-full text-sm font-medium">Active</span>
-            <span className="px-3 py-1 bg-danger bg-opacity-10 text-danger rounded-full text-sm font-medium">1 Offline</span>
+            {/* Fixed: Badges now use standard Tailwind background/text classes for visibility */}
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
+              Active
+            </span>
+            <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+              1 Offline
+            </span>
           </div>
         </div>
       </div>
 
+      {/* Camera Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cameras.map(camera => (
           <CameraStatus key={camera.id} {...camera} />
