@@ -60,7 +60,7 @@ export default function LiveMonitoring() {
           <div className="flex gap-2">
             {/* Fixed: Badges now use standard Tailwind background/text classes for visibility */}
             <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
-              Active
+              11 Active
             </span>
             <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
               1 Offline

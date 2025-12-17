@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 export default function LiveMonitor() {
@@ -8,13 +9,18 @@ export default function LiveMonitor() {
           <h2 className="text-2xl font-bold text-slate-800">Live Monitoring</h2>
           <p className="text-slate-500">Real-time feed from 4 active cameras</p>
         </div>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            System Online
+       <div className="flex gap-2">
+         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2">
+           <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+           4 Online
           </span>
+
+          <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium flex items-center gap-2">
+            <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+            1 Offline
+           </span>
+          </div>
         </div>
-      </div>
       
       {/* Main AI Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
