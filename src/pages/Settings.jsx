@@ -295,8 +295,11 @@ const ManageCameras = () => {
             <div className="flex items-start justify-between mb-3">
               <h4 className="font-semibold text-slate-800">{camera.name}</h4>
               <div className="flex flex-col items-center">
-                <span className="text-xs font-medium text-slate-600 mb-1">{camera.status}</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${camera.status === 'Online' ? 'bg-safe bg-opacity-10 text-safe' : 'bg-danger bg-opacity-10 text-danger'}`}></span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium text-white ${camera.status === 'Online' ? 'bg-safe' : 'bg-danger'}`}
+                >
+                  {camera.status}
+                </span>
               </div>
             </div>
             <p className="text-sm text-slate-600 mb-1">IP: {camera.ip}</p>
