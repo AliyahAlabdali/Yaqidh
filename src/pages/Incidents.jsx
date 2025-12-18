@@ -82,7 +82,7 @@ export default function Incidents() {
     },
     { 
       id: 3, 
-      type: 'Unattended Child', 
+      type: 'Fall Detected', 
       severity: 'critical', 
       location: 'Corridor', 
       time: '2025-12-17 21:43', 
