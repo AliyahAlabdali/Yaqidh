@@ -169,28 +169,6 @@ export default function About() {
           </li>
         </ul>
       </div>
-
-      {/* Contact Section */}
-      <div className="bg-gradient-to-r from-brand-500 to-brand-600 rounded-2xl p-8 text-white">
-        <h3 className="text-2xl font-bold mb-4">Get Started Today</h3>
-        <p className="mb-6 opacity-90">
-          Ready to enhance security at your facility? Contact our team to schedule a demo or get more information about our plans and pricing.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <p className="font-semibold mb-2">Phone</p>
-            <p className="opacity-90">+1 (800) YAQIDH-1</p>
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Email</p>
-            <p className="opacity-90">support@yaqidh.com</p>
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Website</p>
-            <p className="opacity-90">www.yaqidh.com</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
