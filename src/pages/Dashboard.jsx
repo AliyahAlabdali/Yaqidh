@@ -1,13 +1,13 @@
-import React, { useState } from 'react'; // 1. Added useState
+import React, { useState } from 'react'; 
 import { 
   ShieldCheck, 
   AlertOctagon, 
-  Activity, 
+  // Activity removed
   AlertTriangle, 
   CheckCircle, 
   Info, 
   Clock,
-  Filter // 2. Added Filter icon
+  Filter 
 } from 'lucide-react';
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
@@ -90,11 +90,11 @@ export default function Dashboard() {
         <p className="text-slate-500">System Status: <span className="text-safe font-medium">Monitoring Active</span></p>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Stats Grid - Updated to 2 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <StatCard title="Active Cameras" value="12/12" icon={ShieldCheck} color="bg-safe" />
         <StatCard title="Today's Incidents" value="4" icon={AlertOctagon} color="bg-danger" />
-        <StatCard title="System Load" value="14%" icon={Activity} color="bg-brand-500" />
+        {/* System Load Removed */}
       </div>
 
       {/* Recent Activity Section */}

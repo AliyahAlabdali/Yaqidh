@@ -1,27 +1,127 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, AlertCircle, CheckCircle } from 'lucide-react';
+import { 
+  Activity, 
+  AlertCircle, 
+  Wifi, 
+  WifiOff, 
+  Maximize2, 
+  MoreVertical,
+  Baby,
+  Gamepad2,
+  Utensils,
+  BookOpen,
+  Armchair,
+  Trees
+} from 'lucide-react';
 
-const CameraStatus = ({ name, status, activity }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-    <div className="flex items-start justify-between mb-4">
-      <div>
-        <h3 className="font-semibold text-slate-800">{name}</h3>
-        <p className="text-sm text-slate-500 mt-1">{activity}</p>
+const CameraFeed = ({ name, deviceId, status, activity, type }) => {
+  // Mock current time for the video overlay
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Select an icon to represent the "view" of the room
+  const getPlaceholderIcon = () => {
+    switch (type) {
+      case 'play': return <Gamepad2 size={48} className="text-slate-600 opacity-20" />;
+      case 'sleep': return <Baby size={48} className="text-slate-600 opacity-20" />;
+      case 'food': return <Utensils size={48} className="text-slate-600 opacity-20" />;
+      case 'class': return <BookOpen size={48} className="text-slate-600 opacity-20" />;
+      case 'living': return <Armchair size={48} className="text-slate-600 opacity-20" />;
+      case 'garden': return <Trees size={48} className="text-slate-600 opacity-20" />;
+      default: return <Activity size={48} className="text-slate-600 opacity-20" />;
+    }
+  };
+
+  const isOffline = status !== 'active';
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all group">
+      
+      {/* 1. Video Feed Area (The "Screen") */}
+      <div className={`relative h-48 w-full flex items-center justify-center ${isOffline ? 'bg-slate-900' : 'bg-slate-800'}`}>
+        
+        {/* Live Overlay UI */}
+        <div className="absolute top-3 left-3 flex items-center gap-2 z-10">
+          <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md bg-black/40 backdrop-blur-sm border border-white/10`}>
+            {isOffline ? (
+               <div className="w-2 h-2 rounded-full bg-red-500"></div>
+            ) : (
+              <>
+                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                <span className="text-[10px] font-bold text-white tracking-wider">REC</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="absolute top-3 right-3 z-10">
+           <button className="p-1.5 rounded-md bg-black/40 hover:bg-black/60 text-white/80 transition-colors">
+             <Maximize2 size={14} />
+           </button>
+        </div>
+
+        {/* Center Visual (Simulating the camera view) */}
+        {isOffline ? (
+          <div className="flex flex-col items-center gap-2 text-slate-500">
+            <WifiOff size={32} />
+            <span className="text-xs font-mono uppercase tracking-widest">Signal Lost</span>
+          </div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800">
+            {/* This icon acts as the "image" of the room */}
+            {getPlaceholderIcon()}
+            {/* Timestamp Overlay */}
+            <div className="absolute bottom-3 right-3 font-mono text-xs text-white/70 bg-black/40 px-2 py-1 rounded">
+              {new Date().toLocaleDateString()} {time}
+            </div>
+             {/* Bitrate/Quality Mockup */}
+             <div className="absolute bottom-3 left-3 font-mono text-[10px] text-emerald-400 bg-black/40 px-2 py-1 rounded flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+              HD 1080P
+            </div>
+          </div>
+        )}
       </div>
-      {status === 'active' ? (
-        <CheckCircle size={24} className="text-emerald-500" />
-      ) : (
-        <AlertCircle size={24} className="text-red-500" />
-      )}
+
+      {/* 2. Control Panel (Metadata) */}
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-slate-800">{name}</h3>
+              <span className="text-[10px] font-mono text-slate-400 border border-slate-100 px-1 rounded">
+                {deviceId}
+              </span>
+            </div>
+            <p className={`text-xs font-medium mt-1 ${isOffline ? 'text-red-500' : 'text-emerald-600'}`}>
+              {activity}
+            </p>
+          </div>
+          <button className="text-slate-400 hover:text-slate-600">
+            <MoreVertical size={18} />
+          </button>
+        </div>
+        
+        {/* Status Footer */}
+        <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-50">
+           <div className="flex items-center gap-1.5">
+              <Wifi size={14} className={isOffline ? 'text-slate-300' : 'text-emerald-500'} />
+              <span className="text-xs text-slate-500">
+                {isOffline ? 'Offline' : 'Excellent (24ms)'}
+              </span>
+           </div>
+           <span className="text-[10px] text-slate-400 font-mono">
+             CAM-{status === 'active' ? 'ON' : 'ERR'}
+           </span>
+        </div>
+      </div>
     </div>
-    <div className="flex items-center gap-2">
-      <div className={`w-3 h-3 rounded-full ${status === 'active' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
-      <span className="text-sm font-medium text-slate-600">
-        {status === 'active' ? 'Active' : 'Inactive'}
-      </span>
-    </div>
-  </div>
-);
+  );
+};
 
 export default function LiveMonitoring() {
   const [cameras, setCameras] = useState([]);
@@ -33,66 +133,98 @@ export default function LiveMonitoring() {
     if (user && user.role) role = user.role;
   } catch {}
 
-  // Define camera sets based on role
   useEffect(() => {
     if (role === 'manager') {
       setCameras([
-        { id: 1, name: 'Main Play Area Cam', status: 'active', activity: 'Motion detected - 10 secs ago' },
-        { id: 2, name: 'Infant Nap Room', status: 'active', activity: 'No activity - Last 5 mins' },
-        { id: 3, name: 'Dining Hall', status: 'inactive', activity: 'Connection lost' },
-        { id: 4, name: 'Classroom 1 Cam', status: 'active', activity: 'Motion detected - 1 min ago' },
-        { id: 5, name: 'Classroom 2 Cam', status: 'active', activity: 'No activity - Last 2 mins' },
+        { 
+          id: 1, 
+          name: 'Main Play Area', 
+          deviceId: 'C-01', 
+          type: 'play',
+          status: 'active', 
+          activity: 'Motion detected' 
+        },
+        { 
+          id: 2, 
+          name: 'Infant Nap Room', 
+          deviceId: 'C-02', 
+          type: 'sleep',
+          status: 'active', 
+          activity: 'No movement detected' // CHANGED: replaced sound level
+        },
+        { 
+          id: 3, 
+          name: 'Dining Hall', 
+          deviceId: 'C-03', 
+          type: 'food',
+          status: 'inactive', 
+          activity: 'NO SIGNAL' 
+        },
+        { 
+          id: 4, 
+          name: 'Classroom 1', 
+          deviceId: 'C-04', 
+          type: 'class',
+          status: 'active', 
+          activity: 'Session in progress' 
+        },
+        { 
+          id: 5, 
+          name: 'Classroom 2', 
+          deviceId: 'C-05', 
+          type: 'class',
+          status: 'active', 
+          activity: 'Empty room' 
+        },
       ]);
     } else {
-      // Parent View (Home Context)
+      // Parent View
       setCameras([
-        { id: 1, name: 'Living Room', status: 'active', activity: 'Motion detected - Now' },
-        { id: 2, name: 'Baby\'s Bedroom', status: 'active', activity: 'No activity - Last 15 mins' },
-        { id: 3, name: 'Garden / Backyard', status: 'inactive', activity: 'Offline' },
+        { 
+          id: 1, 
+          name: 'Living Room', 
+          deviceId: 'H-01', 
+          type: 'living',
+          status: 'active', 
+          activity: 'Motion detected' 
+        },
+        { 
+          id: 2, 
+          name: 'Baby\'s Bedroom', 
+          deviceId: 'H-02', 
+          type: 'sleep',
+          status: 'active', 
+          activity: 'Temperature: 22°C' 
+        },
+        { 
+          id: 3, 
+          name: 'Backyard', 
+          deviceId: 'H-03', 
+          type: 'garden',
+          status: 'inactive', 
+          activity: 'Device Offline' 
+        },
       ]);
     }
   }, [role]);
 
-  // Dynamic calculations for the summary bar
-  const totalCameras = cameras.length;
   const activeCount = cameras.filter(c => c.status === 'active').length;
-  const inactiveCount = totalCameras - activeCount;
 
   return (
     <div className="space-y-6">
       <header className="mb-6">
         <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-          <Activity size={32} className="text-brand-500" />
-          Live Monitoring
+          <Activity size={32} className="text-emerald-500" />
+          Live Feeds
         </h2>
         <p className="text-slate-500 mt-2">
-          {role === 'manager' ? 'Real-time Nursery surveillance feed' : 'Real-time Home monitoring feed'}
+          System Online • {activeCount} Cameras Active
         </p>
       </header>
 
-      {/* Summary Bar */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800">
-            System Status: {activeCount}/{totalCameras} Online
-          </h3>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
-              {activeCount} Active
-            </span>
-            {inactiveCount > 0 && (
-              <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
-                {inactiveCount} Offline
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Camera Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {cameras.map(camera => (
-          <CameraStatus key={camera.id} {...camera} />
+          <CameraFeed key={camera.id} {...camera} />
         ))}
       </div>
     </div>
