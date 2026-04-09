@@ -67,10 +67,32 @@ This project utilizes a modern, modular architecture:
 ---
 
 ## 📂 Project Structure
+
 ```text
-src/
-├── ai/              # Placeholder modules for AI inference integration
-├── components/      # Reusable UI components (Layout, StatCards, Modals)
-├── pages/           # Main application views (Dashboard, LiveMonitor, Settings, etc.)
-├── mockBackend/     # Simulated data for development/testing
-└── assets/          # Static assets (Logos, Icons)
+Yaqidh/
+├── Models/
+│   ├── Yaqidh_Fall_Model.ipynb
+│   ├── best.pt
+│   ├── Yaqidh_Violence_Model.ipynb
+│   └── Violence_best.pt
+├── public/
+│   ├── Yaqidh-logo.png
+│   └── vite.svg
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── App.jsx
+│   ├── App.css
+│   ├── main.jsx
+│   └── index.css
+├── .gitignore
+├── README.md
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+├── vercel.json
+└── vite.config.js
