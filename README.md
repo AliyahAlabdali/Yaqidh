@@ -80,8 +80,20 @@ Yaqidh/
 │   └── vite.svg
 ├── src/
 │   ├── assets/
+│   │   └── react.svg
 │   ├── components/
+│   │   └── Layout.jsx
 │   ├── pages/
+│   │   ├── About.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── ForgotPassword.jsx
+│   │   ├── Incidents.jsx
+│   │   ├── LiveMonitor.jsx
+│   │   ├── LiveMonitoring.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── Reports.jsx
+│   │   └── Settings.jsx
 │   ├── App.jsx
 │   ├── App.css
 │   ├── main.jsx
