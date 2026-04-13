@@ -62,7 +62,7 @@ This project utilizes a modern, modular architecture:
     ```bash
     npm run dev
     ```
-    The application will launch at `http://localhost:5173`.
+    The application will launch at `https://yaqidh.vercel.app/login`.
 
 ---
 
